@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   Box,
-  LayoutGrid,
   Package,
   PlusCircle,
   Settings,
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/user-nav";
+import { Search } from "./search";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -95,7 +95,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <Logo />
           </div>
           <div className="relative ml-auto flex-1 md:grow-0">
-            {/* Search can be here if needed globally */}
+            <Search placeholder="Search products..." />
           </div>
           <UserNav />
         </header>

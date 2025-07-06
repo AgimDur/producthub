@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { PlusCircle, Search } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { products as allProducts } from "@/lib/data";
 import {
   Card,
