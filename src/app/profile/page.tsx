@@ -29,10 +29,10 @@ export default function ProfilePage() {
             <div className="flex items-center space-x-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage src="/avatars/01.png" alt="User Avatar" />
-                <AvatarFallback>U</AvatarFallback>
+                <AvatarFallback>AD</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-2xl font-semibold font-headline">Admin User</h2>
+                <h2 className="text-2xl font-semibold font-headline">AgimD</h2>
                 <p className="text-muted-foreground">admin@produkhub.com</p>
               </div>
             </div>

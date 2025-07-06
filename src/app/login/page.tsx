@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Info } from "lucide-react";
+import { ArrowRight, TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +19,23 @@ import { Logo } from "@/components/logo";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("admin@produkhub.com");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(""); // Clear previous errors
+
+    // Hardcoded credentials check
+    if (email === "admin@produkhub.com" && password === "077fea9N9!") {
+      router.push("/");
+    } else {
+      setError("Invalid email or password. Please try again.");
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto w-full max-w-sm">
@@ -24,18 +45,18 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl font-headline">Login</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertTitle>Demo Credentials</AlertTitle>
-              <AlertDescription>
-                Use <strong>admin@produkhub.com</strong> and any password.
-              </AlertDescription>
-            </Alert>
+          <form onSubmit={handleLogin} className="grid gap-4">
+            {error && (
+              <Alert variant="destructive">
+                <TriangleAlert className="h-4 w-4" />
+                <AlertTitle>Login Failed</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -43,7 +64,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="m@example.com"
                 required
-                defaultValue="admin@produkhub.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
@@ -56,15 +78,20 @@ export default function LoginPage() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required defaultValue="password" />
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
             </div>
-            <Link href="/" className="w-full">
-              <Button className="w-full">
-                Login
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+            <Button type="submit" className="w-full">
+              Login
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

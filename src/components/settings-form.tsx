@@ -40,7 +40,7 @@ export function SettingsForm() {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
-      name: "Admin User",
+      name: "AgimD",
       email: "admin@produkhub.com",
     },
   });
