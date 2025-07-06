@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { useAuth } from "@/context/auth-context";
 import { ArrowRight, TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,21 +20,15 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/logo";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      router.push("/");
-    }
-  }, [user, authLoading, router]);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -48,23 +41,28 @@ export default function LoginPage() {
       return;
     }
 
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, { displayName: name });
+      }
       router.push("/");
     } catch (err: any) {
-      setError("Invalid email or password. Please try again.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-
-  if (authLoading || user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -73,20 +71,31 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <Logo />
           </div>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account
-          </CardDescription>
+          <CardTitle className="text-2xl font-headline">
+            Create an Account
+          </CardTitle>
+          <CardDescription>Enter your details to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="grid gap-4">
+          <form onSubmit={handleSignup} className="grid gap-4">
             {error && (
               <Alert variant="destructive">
                 <TriangleAlert className="h-4 w-4" />
-                <AlertTitle>Login Failed</AlertTitle>
+                <AlertTitle>Signup Failed</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Your Name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -110,13 +119,13 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Creating Account..." : "Create Account"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <div className="mt-4 text-center text-sm">
-              Don't have an account?{" "}
-              <Link href="/signup" className="underline">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" className="underline">
+                Login
               </Link>
             </div>
           </form>

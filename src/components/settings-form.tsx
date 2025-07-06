@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useAuth } from "@/context/auth-context";
+import { updateProfile } from "firebase/auth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +24,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const settingsFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
   }),
 });
 
@@ -36,21 +36,46 @@ type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
 export function SettingsForm() {
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
-      name: "AgimD",
-      email: "admin@produkhub.com",
+      name: "",
     },
   });
 
-  function onSubmit(data: SettingsFormValues) {
-    toast({
-      title: "Settings Saved",
-      description: "Your new settings have been saved.",
-    });
-    console.log(data);
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.displayName || "",
+      });
+    }
+  }, [user, form]);
+
+  async function onSubmit(data: SettingsFormValues) {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to update your settings.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await updateProfile(user, { displayName: data.name });
+      toast({
+        title: "Settings Saved",
+        description: "Your new settings have been saved.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update settings.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -58,7 +83,7 @@ export function SettingsForm() {
       <CardHeader>
         <CardTitle>Account Settings</CardTitle>
         <CardDescription>
-          Update your name and email address.
+          Update your name and email address. Email cannot be changed.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -77,19 +102,17 @@ export function SettingsForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Your email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="Your email"
+                  value={user?.email || ""}
+                  disabled
+                />
+              </FormControl>
+            </FormItem>
             <Button type="submit">Save Changes</Button>
           </form>
         </Form>
