@@ -1,11 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+// Entferne User, onAuthStateChanged, auth
 
 type AuthContextType = {
-  user: User | null;
+  user: any | null;
   loading: boolean;
 };
 
@@ -15,23 +14,10 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false); // Kein Auth-Loading mehr
 
-  useEffect(() => {
-    // Only subscribe to auth changes if Firebase is initialized
-    if (auth) {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUser(user);
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    } else {
-      // If Firebase is not configured, set user to null and stop loading.
-      setUser(null);
-      setLoading(false);
-    }
-  }, []);
+  // TODO: Hier später eigene Auth-Logik einbauen
 
   const value = { user, loading };
 

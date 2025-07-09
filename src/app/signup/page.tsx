@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { ArrowRight, TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,35 +31,15 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
 
-    if (!auth) {
-      setError(
-        "Firebase is not configured. Please add API keys to your environment file."
-      );
-      setLoading(false);
-      return;
-    }
-
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
       setLoading(false);
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, { displayName: name });
-      }
-      router.push("/");
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    // TODO: Hier später eigenen API-Call für Signup einbauen
+    setError("Signup-Logik noch nicht implementiert.");
+    setLoading(false);
   };
 
   return (

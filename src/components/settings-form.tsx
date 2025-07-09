@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/context/auth-context";
-import { updateProfile } from "firebase/auth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,19 +62,12 @@ export function SettingsForm() {
       return;
     }
 
-    try {
-      await updateProfile(user, { displayName: data.name });
-      toast({
-        title: "Settings Saved",
-        description: "Your new settings have been saved.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update settings.",
-        variant: "destructive",
-      });
-    }
+    // TODO: Hier später eigenen API-Call für Update einbauen
+    toast({
+      title: "Nicht implementiert",
+      description: "Settings-Update-Logik noch nicht implementiert.",
+      variant: "destructive",
+    });
   }
 
   return (

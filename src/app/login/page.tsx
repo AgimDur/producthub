@@ -3,9 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { useAuth } from "@/context/auth-context";
 import { ArrowRight, TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,22 +37,9 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    if (!auth) {
-      setError(
-        "Firebase is not configured. Please add API keys to your environment file."
-      );
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
-    } catch (err: any) {
-      setError("Invalid email or password. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    // TODO: Hier später eigenen API-Call für Login einbauen
+    setError("Login-Logik noch nicht implementiert.");
+    setLoading(false);
   };
 
   if (authLoading || user) {

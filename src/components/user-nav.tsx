@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { useAuth } from "@/context/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,11 +21,7 @@ export function UserNav() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    if (!auth) {
-      console.error("Firebase not configured, cannot log out.");
-      return;
-    }
-    await signOut(auth);
+    // TODO: Hier später eigene Logout-Logik einbauen
     router.push("/login");
   };
 
