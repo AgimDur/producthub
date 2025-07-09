@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useAuth } from "@/context/auth-context";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +34,6 @@ type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
 export function SettingsForm() {
   const { toast } = useToast();
-  const { user } = useAuth();
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
@@ -45,24 +43,16 @@ export function SettingsForm() {
   });
 
   useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.displayName || "",
-      });
-    }
-  }, [user, form]);
+    // Hier später eigenen API-Call für Update einbauen
+    toast({
+      title: "Nicht implementiert",
+      description: "Settings-Update-Logik noch nicht implementiert.",
+      variant: "destructive",
+    });
+  }, [toast]);
 
   async function onSubmit(data: SettingsFormValues) {
-    if (!user) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to update your settings.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // TODO: Hier später eigenen API-Call für Update einbauen
+    // Hier später eigenen API-Call für Update einbauen
     toast({
       title: "Nicht implementiert",
       description: "Settings-Update-Logik noch nicht implementiert.",
@@ -100,7 +90,7 @@ export function SettingsForm() {
                 <Input
                   type="email"
                   placeholder="Your email"
-                  value={user?.email || ""}
+                  value="dummy@example.com" // Dummy-Wert, da user nicht verfügbar
                   disabled
                 />
               </FormControl>

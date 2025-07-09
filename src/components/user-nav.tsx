@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +16,6 @@ import {
 import { LogOut, Settings, User as UserIcon } from "lucide-react";
 
 export function UserNav() {
-  const { user } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -32,6 +30,13 @@ export function UserNav() {
       .map((n) => n[0])
       .join("")
       .toUpperCase();
+  };
+
+  // Passe die Komponente so an, dass sie ohne user-Check funktioniert (z.B. immer anzeigen oder Dummy-User verwenden)
+  const user = {
+    displayName: "John Doe",
+    email: "john.doe@example.com",
+    photoURL: "/avatars/01.png",
   };
 
   if (!user) {
